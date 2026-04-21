@@ -15,6 +15,10 @@ class PublicationAndCreationInfo(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return (f'Добавлен:{self.created_at:%d.%m.%Y} '
+                f'is_published={self.is_published}')
+
 
 class Category(PublicationAndCreationInfo):
     title = models.CharField('Заголовок', max_length=256)
@@ -28,6 +32,7 @@ class Category(PublicationAndCreationInfo):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+        ordering = ('title',)
 
     def __str__(self):
         return self.title[:50]
@@ -39,11 +44,10 @@ class Location(PublicationAndCreationInfo):
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
+        ordering = ('name',)
 
     def __str__(self):
-        return (f'{self.id} '
-                f'{self.name[:50]} Добавлен:{self.created_at:%d.%m.%Y} '
-                f'is_published={self.is_published}')
+        return f'{self.id} {self.name[:50]} {super().__str__()}'
 
 
 class Post(PublicationAndCreationInfo):
@@ -86,14 +90,20 @@ class Post(PublicationAndCreationInfo):
 
 
 class Comment(models.Model):
-    text = models.TextField('Текст комментария')
+    text = models.TextField('Текст')
     post = models.ForeignKey(
         Post,
+        verbose_name='Публикация',
         on_delete=models.CASCADE,
-        related_name='comment',
+        related_name='comments',
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    author = models.ForeignKey(
+        User,
+        verbose_name='Автор',
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
 
     class Meta:
         ordering = ('created_at',)
