@@ -12,9 +12,9 @@ from blog.models import Category, Comment, Post, User
 
 def get_posts(
     posts=Post.objects,
-    filter_published=False,
-    fetch_related=False,
-    count_comments=False,
+    filter_published=True,
+    fetch_related=True,
+    count_comments=True,
 ):
     if filter_published:
         posts = posts.filter(
@@ -27,11 +27,9 @@ def get_posts(
         posts = posts.select_related('category', 'location', 'author')
 
     if count_comments:
-        posts = posts.annotate(comment_count=Count('comments'))
-
-    ordering = posts.model._meta.ordering
-    if ordering:
-        posts = posts.order_by(*ordering)
+        posts = posts.annotate(comment_count=Count('comments')).order_by(
+            *posts.model._meta.ordering
+        )
 
     return posts
 
@@ -138,7 +136,10 @@ class PostUpdateView(OnlyAuthorMixin, UpdateView):
     pk_url_kwarg = 'post_id'
 
     def get_success_url(self):
-        return reverse('blog:post_detail', args=[self.kwargs['post_id']])
+        return reverse(
+            'blog:post_detail',
+            args=[self.kwargs[self.pk_url_kwarg]]
+        )
 
 
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -150,10 +151,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def get_success_url(self):
-        return reverse(
-            'blog:profile',
-            kwargs={'username': self.request.user}
-        )
+        return reverse('blog:profile', args=[self.request.user.username])
 
 
 class PostDeleteView(LoginRequiredMixin, OnlyAuthorMixin, DeleteView):
@@ -176,11 +174,7 @@ def index(request):
         {
             'page_obj': paginate_posts(
                 request,
-                get_posts(
-                    filter_published=True,
-                    fetch_related=True,
-                    count_comments=True
-                )
+                get_posts()
             )
         }
     )
@@ -217,10 +211,7 @@ def category_posts(request, category_slug):
             'page_obj': paginate_posts(
                 request,
                 get_posts(
-                    category.posts,
-                    filter_published=True,
-                    fetch_related=True,
-                    count_comments=True
+                    category.posts
                 )
             )
         }
