@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block head %}
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'img/fav/favicon.ico' %}" type="image">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/fav/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/fav/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/fav/favicon-16x16.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{% endblock %}
+
+{% block title %}Лента записей{% endblock title %}
+
+{% block content %}
+  <div class="container py-5">
+    <h1>Лента записей</h1>
+    {% for post in posts %}
+      <hr>
+      <article>
+        <ul>
+          <li>Место: {{ post.location }}</li>
+          <li>Дата: {{ post.date }}</li>
+          <li>Категория: <a href="{% url 'blog:category_posts' category_slug=post.category %}">{{ post.category }}</a></li>
+        </ul>
+        <div>{{ post.text|truncatewords:20|linebreaks }}</div>
+        <a href="{% url 'blog:post_detail' id=post.id %}">Читать полный текст</a>
+      </article>
+    {% endfor %}
+  </div>
+{% endblock %}

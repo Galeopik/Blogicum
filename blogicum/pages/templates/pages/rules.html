@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block head %}
+  {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'img/fav/favicon.ico' %}" type="image">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/fav/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/fav/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/fav/favicon-16x16.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{% endblock %}
+
+{% block title %}Наши правила{% endblock %}
+
+{% block content %}
+  <div class="container py-5">                        
+    <h1>Наши правила</h1>
+    <p>
+      <b>Cамовыражение.</b> У наших пользователей должна 
+      быть возможность создать что-то своё, выразить себя, 
+      свои мысли и чувства.
+    </p>
+    <p>
+      <b>Многообразие.</b> Мы уважаем и приветствуем разные 
+      мнения и культуры. Блогикум — это место, объединяющее 
+      самых разных людей. Поделитесь своим уникальным взглядом на мир.  
+    </p>
+    <p>
+      <b>Творчество.</b> Не важно, в какой области вы творите, 
+      это может быть литература, дизайн, программирование. 
+      Наши инструменты помогут вам раскрыть талант максимально 
+      просто и комфортно.   
+    </p>
+    <p>
+      <b>Личность.</b> Мы сохраним ваши сокровенные мысли в тайне. 
+      Делитесь своей информацией только с теми, кого выбрали. 
+      Как и насколько засекречивать вашу личную информацию — 
+      определяете вы и только вы.  
+    </p>
+  </div>
+{% endblock %}
