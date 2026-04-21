@@ -109,8 +109,6 @@ class ProfileDetailView(DetailView):
                 get_posts(
                     self.object.posts,
                     filter_published=self.request.user != self.object,
-                    fetch_related=True,
-                    count_comments=True
                 )
             )
         )
@@ -184,7 +182,11 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.author:
         post = get_object_or_404(
-            get_posts(filter_published=True),
+            Post.objects.filter(
+                pub_date__lte=timezone.now(),
+                is_published=True,
+                category__is_published=True
+            ),
             pk=post_id
         )
     return render(
