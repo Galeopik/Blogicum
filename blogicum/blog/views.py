@@ -179,20 +179,13 @@ def index(request):
 
 
 def post_detail(request, post_id):
-    if request.user.is_authenticated:
-        posts = get_posts(
-            filter_published=False,
-            count_comments=False
-        ).filter(
-            Q(author=request.user) | Q(pk__in=get_posts(
-                fetch_related=False,
-                count_comments=False
-            ))
-        )
-    else:
-        posts = get_posts()
+    post = get_object_or_404(Post, pk=post_id)
 
-    post = get_object_or_404(posts, pk=post_id)
+    if request.user != post.author:
+        post = get_object_or_404(
+            get_posts(Post.objects.filter(pk=post_id))
+        )
+
     return render(
         request, 'blog/detail.html',
         {
