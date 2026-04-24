@@ -183,7 +183,12 @@ def post_detail(request, post_id):
 
     if request.user != post.author:
         post = get_object_or_404(
-            get_posts(Post.objects.filter(pk=post_id))
+            get_posts(
+                Post.objects,
+                fetch_related=False,
+                count_comments=False
+            ),
+            pk=post_id
         )
 
     return render(
